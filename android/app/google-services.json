@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "621924404714",
+    "project_id": "task-app-b80d4",
+    "storage_bucket": "task-app-b80d4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:621924404714:android:3d93d606cd8d011fce3693",
+        "android_client_info": {
+          "package_name": "com.sokkay.TodoApp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "621924404714-0dsb6saoanp79b0djjig311a7uusgefk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sokkay.TodoApp",
+            "certificate_hash": "ff465fe21d8853ba2cda305d21ed2fdca4cdd9e8"
+          }
+        },
+        {
+          "client_id": "621924404714-a71mn66tef1afpcgan68ojoi7m6sghhg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBzpbW5SKA_xPZyScv0fa4AkXpXmSVkF9Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "621924404714-a71mn66tef1afpcgan68ojoi7m6sghhg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

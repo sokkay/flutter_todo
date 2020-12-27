@@ -10,7 +10,9 @@ class MainScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.transparent,
@@ -25,6 +27,7 @@ class MainScreen extends StatelessWidget {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Expanded(
             flex: 1,
@@ -39,13 +42,10 @@ class MainScreen extends StatelessWidget {
             child: WeekTasks(),
           ),
           Expanded(
-            flex: 1,
-            child: Container(),
+            child: BottomBar(),
           )
         ],
       ),
-      floatingActionButton: BottomBar(),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }

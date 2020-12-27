@@ -9,7 +9,7 @@ class Category {
   Category({
     this.id,
     this.name,
-    this.tasks,
+    this.tasks = const [],
   });
 
   Map<String, dynamic> toMap() {

@@ -7,19 +7,30 @@ class CustomTheme {
 
   CustomTheme._();
 
-  static const Color color1 = Color.fromRGBO(11, 45, 119, 1);
-  static const Color textColor = color1;
+  static final Color color1 = Color.fromRGBO(11, 45, 119, 1);
+  static final Color textColor = color1;
+  static final Color loginContainerColor = Colors.grey[200];
 
   final ThemeData _themeData = ThemeData.light().copyWith(
     appBarTheme: AppBarTheme(
       iconTheme: IconThemeData(color: color1),
     ),
+    primaryColor: color1,
+    cursorColor: color1,
+    buttonTheme: ButtonThemeData(textTheme: ButtonTextTheme.primary),
+    textTheme: TextTheme(
+      bodyText1: TextStyle(color: color1),
+      bodyText2: TextStyle(color: color1),
+    ),
   );
 
-  static const textLabelMainStyle =
-      const TextStyle(color: textColor, fontSize: 16);
+  static final textLabelMainStyle = TextStyle(color: textColor, fontSize: 16);
 
-  static const horizontalPadding = const EdgeInsets.symmetric(horizontal: 18);
+  static final horizontalPadding = const EdgeInsets.symmetric(horizontal: 18);
+
+  static final authBorder = BorderRadius.only(
+    topLeft: Radius.circular(60),
+  );
 
   ThemeData theme() => _themeData;
 }
