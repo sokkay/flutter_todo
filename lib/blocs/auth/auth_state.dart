@@ -1,19 +1,25 @@
 part of 'auth_bloc.dart';
 
-enum AuthStatus { initial, logged, loggedOut, error }
+enum AuthStatus { unknown, authenticated, unauthenticated, error }
 
-@immutable
-class AuthState {
+class AuthState extends Equatable {
   final User user;
-  final Status status;
   final String errorMessage;
-  final AuthStatus authStatus;
+  final AuthStatus status;
 
-  AuthState(
-      {this.user,
-      this.status = Status.initial,
-      this.errorMessage,
-      this.authStatus = AuthStatus.initial});
+  const AuthState._({
+    this.user = User.empty,
+    this.errorMessage,
+    this.status = AuthStatus.unknown,
+  });
+
+  const AuthState.unkown() : this._();
+
+  const AuthState.authenticated(User user)
+      : this._(status: AuthStatus.authenticated, user: user);
+  
+  const AuthState.unauthenticated()
+      : this._(status: AuthStatus.unauthenticated);
 
   AuthState copyWith({
     User user,
@@ -21,11 +27,13 @@ class AuthState {
     String errorMessage,
     AuthStatus authStatus,
   }) {
-    return AuthState(
+    return AuthState._(
       user: user ?? this.user,
-      status: status ?? this.status,
       errorMessage: errorMessage ?? this.errorMessage,
-      authStatus: authStatus ?? this.authStatus,
+      status: authStatus ?? this.status,
     );
   }
+
+  @override
+  List<Object> get props => [user, errorMessage, status];
 }

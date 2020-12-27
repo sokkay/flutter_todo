@@ -6,4 +6,8 @@ abstract class RouteNames {
   static const editScreen = '/edit';
   static const loginScreen = '/login';
   static const registerScreen = '/register';
+
+  static const loadingDialog = '/loading';
+
+  static const errorDialog = '/errorDialog';
 }

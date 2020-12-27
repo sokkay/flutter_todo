@@ -8,6 +8,7 @@ class CustomTheme {
   CustomTheme._();
 
   static final Color color1 = Color.fromRGBO(11, 45, 119, 1);
+  static final Color color9 = Color.fromRGBO(42, 46, 67, 1);
   static final Color textColor = color1;
   static final Color loginContainerColor = Colors.grey[200];
 
@@ -21,6 +22,7 @@ class CustomTheme {
     textTheme: TextTheme(
       bodyText1: TextStyle(color: color1),
       bodyText2: TextStyle(color: color1),
+      subtitle1: TextStyle(color: color1),
     ),
   );
 

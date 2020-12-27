@@ -22,7 +22,7 @@ class MainDrawer extends StatelessWidget {
           Spacer(),
           ListTile(
             title: Text('Salir'),
-            onTap: () => context.read<AuthBloc>().add(AuthSignOut()),
+            onTap: () => context.read<AuthBloc>().add(AuthLogoutRequested()),
           )
         ],
       ),
