@@ -1,17 +1,17 @@
 import 'package:TodoApp/models/formz/email.dart';
+import 'package:TodoApp/models/formz/name.dart';
 import 'package:TodoApp/models/formz/password.dart';
 import 'package:TodoApp/repositories/authentication_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:formz/formz.dart';
-import 'package:meta/meta.dart';
 
-part 'login_state.dart';
+part 'register_state.dart';
 
-class LoginCubit extends Cubit<LoginState> {
-  LoginCubit(this._authenticationRepository)
+class RegisterCubit extends Cubit<RegisterState> {
+  RegisterCubit(this._authenticationRepository)
       : assert(_authenticationRepository != null),
-        super(const LoginState());
+        super(const RegisterState());
 
   final AuthenticationRepository _authenticationRepository;
 
@@ -19,7 +19,7 @@ class LoginCubit extends Cubit<LoginState> {
     final email = Email.dirty(value);
     emit(state.copyWith(
       email: email,
-      status: Formz.validate([email, state.password]),
+      status: Formz.validate([state.password, state.name, email]),
     ));
   }
 
@@ -27,7 +27,15 @@ class LoginCubit extends Cubit<LoginState> {
     final password = Password.dirty(value);
     emit(state.copyWith(
       password: password,
-      status: Formz.validate([state.email, password]),
+      status: Formz.validate([state.email, state.name, password]),
+    ));
+  }
+
+  void nameChanged(String value) {
+    final name = Name.dirty(value);
+    emit(state.copyWith(
+      name: name,
+      status: Formz.validate([state.email, state.password, name]),
     ));
   }
 
@@ -35,7 +43,7 @@ class LoginCubit extends Cubit<LoginState> {
     if (!state.status.isValidated) return;
     emit(state.copyWith(status: FormzStatus.submissionInProgress));
     try {
-      await _authenticationRepository.logInWithEmailAndPassword(
+      await _authenticationRepository.signUp(
         email: state.email.value,
         password: state.password.value,
       );
@@ -47,27 +55,6 @@ class LoginCubit extends Cubit<LoginState> {
       emit(state.copyWith(
         status: FormzStatus.submissionFailure,
         errorMessage: e.message,
-      ));
-    }
-  }
-
-  Future<void> logInWithGoogle() async {
-    emit(state.copyWith(status: FormzStatus.submissionInProgress));
-    try {
-      await _authenticationRepository.logInWithGoogle();
-      emit(state.copyWith(
-        status: FormzStatus.submissionSuccess,
-        errorMessage: null,
-      ));
-    } on TodoException catch (e) {
-      emit(state.copyWith(
-        status: FormzStatus.submissionFailure,
-        errorMessage: e.message,
-      ));
-    } on NoSuchMethodError {
-      emit(state.copyWith(
-        status: FormzStatus.submissionFailure,
-        errorMessage: 'Error inesperado',
       ));
     }
   }
