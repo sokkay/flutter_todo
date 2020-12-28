@@ -39,7 +39,7 @@ class RegisterCubit extends Cubit<RegisterState> {
     ));
   }
 
-  Future<void> logInWithCredentials() async {
+  Future<void> signUpWithCredentials() async {
     if (!state.status.isValidated) return;
     emit(state.copyWith(status: FormzStatus.submissionInProgress));
     try {

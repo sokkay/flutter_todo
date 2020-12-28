@@ -1,7 +1,11 @@
+import 'package:TodoApp/repositories/authentication_repository.dart';
+import 'package:TodoApp/screens/register/cubit/register_cubit.dart';
 import 'package:TodoApp/theme/custom_theme.dart';
 import 'package:TodoApp/widgets/auth_bottom_text.dart';
 import 'package:TodoApp/widgets/custom_text_input.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:formz/formz.dart';
 
 class RegisterContainer extends StatelessWidget {
   const RegisterContainer({
@@ -19,7 +23,14 @@ class RegisterContainer extends StatelessWidget {
         padding: CustomTheme.horizontalPadding,
         child: Column(
           children: [
-            Expanded(flex: 9, child: _RegisterForm()),
+            Expanded(
+              flex: 9,
+              child: BlocProvider(
+                create: (context) =>
+                    RegisterCubit(context.read<AuthenticationRepository>()),
+                child: _RegisterForm(),
+              ),
+            ),
             Expanded(
               flex: 1,
               child: AuthBottomText(
@@ -45,15 +56,8 @@ class _RegisterForm extends StatefulWidget {
 }
 
 class _RegisterFormState extends State<_RegisterForm> {
-  TextEditingController nameCtrl;
-  TextEditingController emailCtrl;
-  TextEditingController passwordCtrl;
-
   @override
   void initState() {
-    nameCtrl = new TextEditingController();
-    emailCtrl = new TextEditingController();
-    passwordCtrl = new TextEditingController();
     super.initState();
   }
 
@@ -66,31 +70,59 @@ class _RegisterFormState extends State<_RegisterForm> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          CustomTextInput(
-            controller: nameCtrl,
-            labelText: 'Nombre',
-            margin: margin,
+          BlocBuilder<RegisterCubit, RegisterState>(
+            builder: (context, state) {
+              return CustomTextInput(
+                key: const Key('registerForm_nameInput_textField'),
+                labelText: 'Nombre',
+                margin: margin,
+                onChanged: (name) =>
+                    context.read<RegisterCubit>().nameChanged(name),
+                errorText: state.name.invalid ? 'Nombre no válido' : null,
+              );
+            },
           ),
-          CustomTextInput(
-            margin: margin,
-            labelText: 'Email',
-            controller: emailCtrl,
+          BlocBuilder<RegisterCubit, RegisterState>(
+            builder: (context, state) {
+              return CustomTextInput(
+                key: const Key('registerForm_emailInput_textField'),
+                margin: margin,
+                labelText: 'Email',
+                onChanged: (email) =>
+                    context.read<RegisterCubit>().emailChanged(email),
+                errorText: state.email.invalid ? 'Email no válido' : null,
+              );
+            },
           ),
-          CustomTextInput(
-            margin: margin,
-            labelText: 'Contraseña',
-            controller: passwordCtrl,
+          BlocBuilder<RegisterCubit, RegisterState>(
+            builder: (context, state) {
+              return CustomTextInput(
+                key: const Key('registerForm_passwordInput_textField'),
+                margin: margin,
+                labelText: 'Contraseña',
+                onChanged: (password) =>
+                    context.read<RegisterCubit>().passwordChanged(password),
+                errorText: state.password.invalid ? 'Password no válido' : null,
+              );
+            },
           ),
           SizedBox(height: 12),
-          MaterialButton(
-            onPressed: () {},
-            child: Text('Crear Cuenta'),
-            color: CustomTheme.color1,
-            padding: const EdgeInsets.symmetric(vertical: 14),
-            minWidth: double.maxFinite,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
+          BlocBuilder<RegisterCubit, RegisterState>(
+            builder: (context, state) {
+              return MaterialButton(
+                onPressed: state.status.isSubmissionInProgress
+                    ? null
+                    : () =>
+                        context.read<RegisterCubit>().signUpWithCredentials(),
+                child: Text('Crear Cuenta'),
+                color: CustomTheme.color1,
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                minWidth: double.maxFinite,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              );
+            },
           )
         ],
       ),
@@ -99,9 +131,6 @@ class _RegisterFormState extends State<_RegisterForm> {
 
   @override
   void dispose() {
-    nameCtrl?.dispose();
-    emailCtrl?.dispose();
-    passwordCtrl?.dispose();
     super.dispose();
   }
 }
