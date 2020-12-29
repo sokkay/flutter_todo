@@ -10,6 +10,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -55,6 +56,12 @@ class _MyAppState extends State<MyApp> {
       onGenerateRoute: appRoutes,
       initialRoute: RouteNames.splashScreen,
       theme: CustomTheme().theme(),
+      supportedLocales: [const Locale('es', 'CL')],
+      localizationsDelegates: [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate
+      ],
       builder: (context, child) {
         return BlocListener<AuthBloc, AuthState>(
           listenWhen: (previous, current) => current.status != previous.status,

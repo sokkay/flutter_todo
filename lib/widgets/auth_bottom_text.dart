@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:TodoApp/routes/routes_names.dart';
-
 class AuthBottomText extends StatelessWidget {
   final String text;
   final String buttonText;

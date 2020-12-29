@@ -60,16 +60,17 @@ class AuthenticationRepository {
     }
   }
 
-  Future<void> signUp({
-    @required String email,
-    @required String password,
-  }) async {
+  Future<void> signUp(
+      {@required String email,
+      @required String password,
+      @required String name}) async {
     assert(email != null && password != null);
     try {
-      await _firebaseAuth.createUserWithEmailAndPassword(
+      final userCredential = await _firebaseAuth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
+      await userCredential.user.updateProfile(displayName: name);
     } on firebase_auth.FirebaseAuthException catch (e) {
       String errorMessage;
       if (e.code == 'weak-password') {

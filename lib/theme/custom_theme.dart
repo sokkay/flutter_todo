@@ -8,6 +8,8 @@ class CustomTheme {
   CustomTheme._();
 
   static final Color color1 = Color.fromRGBO(11, 45, 119, 1);
+  // static final Color color2 = Color.fromRGBO(196, 182, 37, 1);
+  static final Color color2 = Color.fromRGBO(196, 113, 37, 1);
   static final Color color9 = Color.fromRGBO(42, 46, 67, 1);
   static final Color textColor = color1;
   static final Color loginContainerColor = Colors.grey[200];

@@ -1,9 +1,11 @@
+import 'package:TodoApp/blocs/auth/auth_bloc.dart';
+import 'package:TodoApp/helpers/utils.dart';
 import 'package:TodoApp/theme/custom_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class Header extends StatelessWidget {
-  final dateFormated = DateFormat('EEEE, d MMMM').format(DateTime.now());
+  final dateFormated = Utils.formateDateCapitalizate(DateTime.now());
 
   final nameStyle = new TextStyle(
     color: CustomTheme.textColor,
@@ -24,7 +26,14 @@ class Header extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.max,
         children: [
-          Text('Hola Usuario!', style: nameStyle),
+          BlocBuilder<AuthBloc, AuthState>(
+            builder: (context, state) {
+              return Text(
+                'Hola ${state.user != null ? state.user?.name?.split(' ')?.first : "Usuario"}!',
+                style: nameStyle,
+              );
+            },
+          ),
           Text(
             dateFormated,
             style: dateStyle,
