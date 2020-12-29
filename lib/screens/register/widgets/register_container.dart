@@ -3,6 +3,7 @@ import 'package:TodoApp/screens/register/cubit/register_cubit.dart';
 import 'package:TodoApp/theme/custom_theme.dart';
 import 'package:TodoApp/widgets/auth_bottom_text.dart';
 import 'package:TodoApp/widgets/custom_text_input.dart';
+import 'package:TodoApp/widgets/dialogs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
@@ -19,28 +20,26 @@ class RegisterContainer extends StatelessWidget {
         color: CustomTheme.loginContainerColor,
         borderRadius: CustomTheme.authBorder,
       ),
-      child: Container(
-        padding: CustomTheme.horizontalPadding,
-        child: Column(
-          children: [
-            Expanded(
-              flex: 9,
-              child: BlocProvider(
-                create: (context) =>
-                    RegisterCubit(context.read<AuthenticationRepository>()),
-                child: _RegisterForm(),
-              ),
+      padding: CustomTheme.horizontalPadding,
+      child: Column(
+        children: [
+          Expanded(
+            flex: 9,
+            child: BlocProvider(
+              create: (context) =>
+                  RegisterCubit(context.read<AuthenticationRepository>()),
+              child: _RegisterForm(),
             ),
-            Expanded(
-              flex: 1,
-              child: AuthBottomText(
-                text: '¿Ya tienes cuenta? ',
-                buttonText: 'Inicia Sesión!',
-                onPress: () => Navigator.of(context).pop(),
-              ),
+          ),
+          Expanded(
+            flex: 1,
+            child: AuthBottomText(
+              text: '¿Ya tienes cuenta? ',
+              buttonText: 'Inicia Sesión!',
+              onPress: () => Navigator.of(context).pop(),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -56,6 +55,8 @@ class _RegisterForm extends StatefulWidget {
 }
 
 class _RegisterFormState extends State<_RegisterForm> {
+  final margin = const EdgeInsets.only(bottom: 20);
+
   @override
   void initState() {
     super.initState();
@@ -63,8 +64,6 @@ class _RegisterFormState extends State<_RegisterForm> {
 
   @override
   Widget build(BuildContext context) {
-    final margin = const EdgeInsets.only(bottom: 20);
-
     return Container(
       padding: const EdgeInsets.only(top: 32),
       child: Column(
@@ -77,7 +76,7 @@ class _RegisterFormState extends State<_RegisterForm> {
                 labelText: 'Nombre',
                 margin: margin,
                 onChanged: (name) =>
-                    context.read<RegisterCubit>().nameChanged(name),
+                    context.read<RegisterCubit>().nameChanged(name.trim()),
                 errorText: state.name.invalid ? 'Nombre no válido' : null,
               );
             },
@@ -89,7 +88,7 @@ class _RegisterFormState extends State<_RegisterForm> {
                 margin: margin,
                 labelText: 'Email',
                 onChanged: (email) =>
-                    context.read<RegisterCubit>().emailChanged(email),
+                    context.read<RegisterCubit>().emailChanged(email.trim()),
                 errorText: state.email.invalid ? 'Email no válido' : null,
               );
             },
@@ -100,14 +99,18 @@ class _RegisterFormState extends State<_RegisterForm> {
                 key: const Key('registerForm_passwordInput_textField'),
                 margin: margin,
                 labelText: 'Contraseña',
+                obscureText: true,
                 onChanged: (password) =>
                     context.read<RegisterCubit>().passwordChanged(password),
-                errorText: state.password.invalid ? 'Password no válido' : null,
+                errorText: state.password.invalid
+                    ? 'Password no válido. \nAl menos 6 caracteres.\nIncluya letras y números.'
+                    : null,
               );
             },
           ),
           SizedBox(height: 12),
-          BlocBuilder<RegisterCubit, RegisterState>(
+          BlocConsumer<RegisterCubit, RegisterState>(
+            listener: listener,
             builder: (context, state) {
               return MaterialButton(
                 onPressed: state.status.isSubmissionInProgress
@@ -132,5 +135,18 @@ class _RegisterFormState extends State<_RegisterForm> {
   @override
   void dispose() {
     super.dispose();
+  }
+
+  void listener(BuildContext context, RegisterState state) {
+    switch (state.status) {
+      case FormzStatus.submissionInProgress:
+        showCustomLoadingDialog(context);
+        break;
+      case FormzStatus.submissionFailure:
+        showDialogError(context, state.errorMessage);
+        break;
+      default:
+        break;
+    }
   }
 }
