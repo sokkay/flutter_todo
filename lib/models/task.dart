@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:TodoApp/models/category.dart';
+import 'package:flutter/foundation.dart';
 
 class Task {
   final String id;
@@ -9,7 +9,6 @@ class Task {
   final bool complete;
   final DateTime date;
   final List<DateTime> repetitions;
-  final Category category;
 
   Task({
     this.id,
@@ -18,7 +17,6 @@ class Task {
     this.complete,
     this.date,
     this.repetitions,
-    this.category,
   });
 
   Map<String, dynamic> toMap() {
@@ -30,7 +28,6 @@ class Task {
       'date': date?.millisecondsSinceEpoch,
       'repetitions':
           repetitions?.map((x) => x?.millisecondsSinceEpoch)?.toList(),
-      'category': category?.toMap(),
     };
   }
 
@@ -45,7 +42,6 @@ class Task {
       date: DateTime.fromMillisecondsSinceEpoch(map['date']),
       repetitions: List<DateTime>.from(map['repetitions']
           ?.map((x) => DateTime.fromMillisecondsSinceEpoch(x))),
-      category: Category.fromMap(map['category']),
     );
   }
 
@@ -54,7 +50,30 @@ class Task {
   factory Task.fromJson(String source) => Task.fromMap(json.decode(source));
 
   @override
+  bool operator ==(Object o) {
+    if (identical(this, o)) return true;
+
+    return o is Task &&
+        o.id == id &&
+        o.title == title &&
+        o.details == details &&
+        o.complete == complete &&
+        o.date == date &&
+        listEquals(o.repetitions, repetitions);
+  }
+
+  @override
+  int get hashCode {
+    return id.hashCode ^
+        title.hashCode ^
+        details.hashCode ^
+        complete.hashCode ^
+        date.hashCode ^
+        repetitions.hashCode;
+  }
+
+  @override
   String toString() {
-    return 'Task(id: $id, title: $title, details: $details, complete: $complete, date: $date, repetitions: $repetitions, category: $category)';
+    return 'Task(id: $id, title: $title, details: $details, complete: $complete, date: $date, repetitions: $repetitions)';
   }
 }

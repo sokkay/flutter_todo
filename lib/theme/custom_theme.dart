@@ -14,6 +14,13 @@ class CustomTheme {
   static final Color textColor = color1;
   static final Color loginContainerColor = Colors.grey[200];
 
+  static const modalshape = const RoundedRectangleBorder(
+    borderRadius: const BorderRadius.only(
+      topLeft: const Radius.circular(8),
+      topRight: const Radius.circular(8),
+    ),
+  );
+
   final ThemeData _themeData = ThemeData.light().copyWith(
     appBarTheme: AppBarTheme(
       iconTheme: IconThemeData(color: color1),

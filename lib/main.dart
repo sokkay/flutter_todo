@@ -2,6 +2,7 @@ import 'package:TodoApp/blocs/auth/auth_bloc.dart';
 import 'package:TodoApp/blocs/category/category_bloc.dart';
 import 'package:TodoApp/blocs/simple_bloc_observer.dart';
 import 'package:TodoApp/repositories/authentication_repository.dart';
+import 'package:TodoApp/repositories/firestore_category_repository.dart';
 import 'package:TodoApp/routes/routes.dart';
 import 'package:TodoApp/routes/routes_names.dart';
 import 'package:TodoApp/theme/custom_theme.dart';
@@ -20,11 +21,16 @@ void main() async {
   runApp(
     MultiRepositoryProvider(
       providers: [
-        RepositoryProvider(create: (context) => AuthenticationRepository())
+        RepositoryProvider(create: (context) => AuthenticationRepository()),
+        RepositoryProvider(create: (context) => FirestoreCategoryRepository()),
       ],
       child: MultiBlocProvider(
         providers: [
-          BlocProvider(create: (context) => CategoryBloc()),
+          BlocProvider(
+            create: (context) => CategoryBloc(
+              context.read<FirestoreCategoryRepository>(),
+            ),
+          ),
           BlocProvider(
             create: (context) => AuthBloc(
               context.read<AuthenticationRepository>(),
@@ -68,6 +74,8 @@ class _MyAppState extends State<MyApp> {
           listener: (context, state) {
             switch (state.status) {
               case AuthStatus.authenticated:
+                context.read<CategoryBloc>().add(CategoryGet());
+
                 _navigator.pushNamedAndRemoveUntil(
                   RouteNames.mainScreen,
                   (route) => false,

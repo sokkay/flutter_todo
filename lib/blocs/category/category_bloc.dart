@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:TodoApp/models/category.dart';
 import 'package:TodoApp/models/status.dart';
+import 'package:TodoApp/repositories/categories_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 
@@ -9,7 +10,13 @@ part 'category_event.dart';
 part 'category_state.dart';
 
 class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
-  CategoryBloc() : super(CategoryState());
+  CategoryBloc(CategoriesRepository categoriesRepository)
+      : assert(categoriesRepository != null),
+        this._categoriesRepository = categoriesRepository,
+        super(CategoryState());
+
+  final CategoriesRepository _categoriesRepository;
+  StreamSubscription _categoriesSubscription;
 
   @override
   Stream<CategoryState> mapEventToState(
@@ -27,25 +34,39 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
     if (event is CategoryDelete) {
       yield* mapCategoryDeleteToState(event.category);
     }
+    if (event is CategoryCategoriesUpdate) {
+      yield* mapCategoryCategoriesUpdatetoState(event);
+    }
+  }
+
+  @override
+  Future<void> close() {
+    _categoriesSubscription?.cancel();
+    return super.close();
   }
 
   Stream<CategoryState> mapCategoryGetToState() async* {
-    yield state.copyWith();
+    yield state.copyWith(status: Status.loading);
+    _categoriesSubscription?.cancel();
+    _categoriesSubscription = _categoriesRepository.getCategories().listen(
+          (categories) => add(CategoryCategoriesUpdate(categories: categories)),
+        );
   }
 
   Stream<CategoryState> mapCategoryAddToState(Category category) async* {
-    yield state.copyWith(categories: [...state.categories, category]);
-    print(state.categories);
+    _categoriesRepository.addCategory(category);
   }
 
   Stream<CategoryState> mapCategoryUpdateToState(Category category) async* {
-    yield state.copyWith(
-        categories: state.categories
-            .map((cat) => cat.id == category.id ? category : cat));
+    _categoriesRepository.updateCategory(category);
   }
 
   Stream<CategoryState> mapCategoryDeleteToState(Category category) async* {
-    yield state.copyWith(
-        categories: state.categories.where((cat) => cat.id != category.id));
+    _categoriesRepository.deleteCategory(category);
+  }
+
+  Stream<CategoryState> mapCategoryCategoriesUpdatetoState(
+      CategoryCategoriesUpdate event) async* {
+    yield state.copyWith(status: Status.complete, categories: event.categories);
   }
 }

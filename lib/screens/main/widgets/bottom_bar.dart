@@ -1,9 +1,8 @@
-import 'package:TodoApp/blocs/category/category_bloc.dart';
-import 'package:TodoApp/models/category.dart';
+import 'package:TodoApp/screens/main/widgets/add_category.dart';
+import 'package:TodoApp/screens/task_new/new_task_screen.dart';
 import 'package:TodoApp/theme/custom_theme.dart';
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class BottomBar extends StatelessWidget {
   final buttonTextStyle = TextStyle(
@@ -71,6 +70,7 @@ class BottomBar extends StatelessWidget {
   void openBottomSheet(BuildContext context) {
     showModalBottomSheet(
       context: context,
+      shape: CustomTheme.modalshape,
       builder: (context) => Container(
         child: Wrap(
           children: [
@@ -83,7 +83,7 @@ class BottomBar extends StatelessWidget {
             ListTile(
               leading: Icon(Icons.add),
               title: Text('Crear nueva categoría'),
-              onTap: () => openModal(context),
+              onTap: () => openAddCategoryModal(context),
             ),
             Divider(),
             ListTile(
@@ -97,47 +97,19 @@ class BottomBar extends StatelessWidget {
     );
   }
 
-  void openModal(BuildContext context) {
-    TextEditingController txController = new TextEditingController();
-
+  void openAddCategoryModal(BuildContext context) {
     Navigator.pop(context);
-    showDialog(
+    showModalBottomSheet(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Crear Categoria'),
-        content: Wrap(
-          children: [
-            TextFormField(
-              controller: txController,
-              decoration: InputDecoration(
-                hintText: 'Ingresa el título de la categoría',
-              ),
-              validator: (value) =>
-                  value.length < 3 ? 'Nombre demasiado corto' : null,
-            ),
-          ],
+      shape: CustomTheme.modalshape,
+      isScrollControlled: true,
+      builder: (context) => Container(
+        padding: EdgeInsets.symmetric(
+          vertical: 12,
+          horizontal: 12,
         ),
-        actions: [
-          FlatButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text('Cancelar'),
-            textColor: Colors.grey,
-          ),
-          FlatButton(
-            onPressed: () {
-              if (txController.text.isNotEmpty) {
-                context.read<CategoryBloc>().add(CategoryAdd(
-                      category: new Category(
-                        id: DateTime.now().millisecondsSinceEpoch.toString(),
-                        name: txController.text,
-                      ),
-                    ));
-                Navigator.of(context).pop();
-              }
-            },
-            child: Text('Aceptar'),
-          ),
-        ],
+        margin: MediaQuery.of(context).viewInsets,
+        child: AddCategory(),
       ),
     );
   }
@@ -168,17 +140,6 @@ class _OpenContainerWrapper extends StatelessWidget {
           RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
       closedColor: Colors.white,
       closedBuilder: closedBuilder,
-    );
-  }
-}
-
-class NewTaskScreen extends StatelessWidget {
-  const NewTaskScreen({Key key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(),
     );
   }
 }
