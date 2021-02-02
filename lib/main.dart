@@ -5,6 +5,7 @@ import 'package:TodoApp/repositories/authentication_repository.dart';
 import 'package:TodoApp/repositories/firestore_category_repository.dart';
 import 'package:TodoApp/routes/routes.dart';
 import 'package:TodoApp/routes/routes_names.dart';
+import 'package:TodoApp/screens/main/cubit/main_screen_cubit.dart';
 import 'package:TodoApp/theme/custom_theme.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -36,6 +37,7 @@ void main() async {
               context.read<AuthenticationRepository>(),
             ),
           ),
+          BlocProvider(create: (_) => MainScreenCubit())
         ],
         child: MyApp(),
       ),

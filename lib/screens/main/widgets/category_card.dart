@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 
-class MainScreenCategoryCard extends StatelessWidget {
+class CategoryCard extends StatelessWidget {
   final String title;
   final int tasks;
   final Color color;
+  final VoidCallback onTap;
 
-  MainScreenCategoryCard({
+  CategoryCard({
     Key key,
     @required this.title,
     @required this.tasks,
     @required this.color,
+    this.onTap,
   }) : super(key: key);
 
   final titleStyle = TextStyle(
@@ -27,12 +29,13 @@ class MainScreenCategoryCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Wrap(
       children: [
-        Container(
-          padding: const EdgeInsets.only(right: 10),
+        GestureDetector(
+          onTap: onTap,
           child: Card(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
             ),
+            margin: const EdgeInsets.only(right: 10, top: 8),
             child: Padding(
               padding: const EdgeInsets.only(
                 left: 18,

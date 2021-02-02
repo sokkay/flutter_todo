@@ -1,8 +1,8 @@
-import 'package:TodoApp/screens/main/widgets/add_category.dart';
-import 'package:TodoApp/screens/task_new/new_task_screen.dart';
+import 'package:TodoApp/screens/main/cubit/main_screen_cubit.dart';
 import 'package:TodoApp/theme/custom_theme.dart';
-import 'package:animations/animations.dart';
+import 'package:bubble_bottom_bar/bubble_bottom_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class BottomBar extends StatelessWidget {
   final buttonTextStyle = TextStyle(
@@ -13,133 +13,56 @@ class BottomBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
-      child: Row(
-        children: [
-          Expanded(
-            child: addTaskBtn(),
-          ),
-          SizedBox(width: 10),
-          Material(
-            color: Colors.transparent,
-            shape: CircleBorder(),
-            clipBehavior: Clip.antiAlias,
-            child: Ink(
-              decoration: ShapeDecoration(
+    return BlocBuilder<MainScreenCubit, MainScreenState>(
+      builder: (context, state) {
+        return BubbleBottomBar(
+          opacity: 0.2,
+          currentIndex: state.currentPage,
+          onTap: (page) => context.read<MainScreenCubit>().changePage(page),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+          hasNotch: true,
+          fabLocation: BubbleBottomBarFabLocation.end,
+          elevation: 8,
+          items: [
+            BubbleBottomBarItem(
+              title: Text('Home'),
+              backgroundColor: Colors.red,
+              icon: Icon(
+                Icons.home,
                 color: CustomTheme.color1,
-                shape: CircleBorder(),
               ),
-              child: IconButton(
-                icon: Icon(Icons.list),
-                color: Colors.white,
-                onPressed: () {
-                  openBottomSheet(context);
-                },
+              activeIcon: Icon(
+                Icons.home,
+                color: Colors.red,
               ),
             ),
-          )
-        ],
-      ),
-    );
-  }
-
-  Widget addTaskBtn() {
-    return _OpenContainerWrapper(
-      onClosed: (data) {},
-      transitionType: ContainerTransitionType.fade,
-      closedBuilder: (context, VoidCallback action) {
-        return MaterialButton(
-          onPressed: action,
-          color: Colors.grey[100],
-          shape: StadiumBorder(),
-          padding: EdgeInsets.only(left: 18, top: 15, bottom: 15),
-          child: Row(
-            children: [
-              Text(
-                'Agregar Nueva Tarea',
-                style: buttonTextStyle,
-              )
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  void openBottomSheet(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      shape: CustomTheme.modalshape,
-      builder: (context) => Container(
-        child: Wrap(
-          children: [
-            ListTile(
-              title: Text('Ordenar por'),
-              subtitle: Text('Mi Orden'),
-              onTap: () {},
+            BubbleBottomBarItem(
+              title: Text('Tareas'),
+              backgroundColor: Colors.deepPurple,
+              icon: Icon(
+                Icons.access_time,
+                color: CustomTheme.color1,
+              ),
+              activeIcon: Icon(
+                Icons.access_time,
+                color: Colors.deepPurple,
+              ),
             ),
-            Divider(),
-            ListTile(
-              leading: Icon(Icons.add),
-              title: Text('Crear nueva categoría'),
-              onTap: () => openAddCategoryModal(context),
-            ),
-            Divider(),
-            ListTile(
-              title: Text('Tema'),
-              subtitle: Text('Claro'),
-              onTap: () {},
+            BubbleBottomBarItem(
+              title: Text('Opciones'),
+              backgroundColor: Colors.indigo,
+              icon: Icon(
+                Icons.settings,
+                color: CustomTheme.color1,
+              ),
+              activeIcon: Icon(
+                Icons.settings,
+                color: Colors.indigo,
+              ),
             ),
           ],
-        ),
-      ),
-    );
-  }
-
-  void openAddCategoryModal(BuildContext context) {
-    Navigator.pop(context);
-    showModalBottomSheet(
-      context: context,
-      shape: CustomTheme.modalshape,
-      isScrollControlled: true,
-      builder: (context) => Container(
-        padding: EdgeInsets.symmetric(
-          vertical: 12,
-          horizontal: 12,
-        ),
-        margin: MediaQuery.of(context).viewInsets,
-        child: AddCategory(),
-      ),
-    );
-  }
-}
-
-class _OpenContainerWrapper extends StatelessWidget {
-  const _OpenContainerWrapper({
-    this.closedBuilder,
-    this.transitionType,
-    this.onClosed,
-  });
-
-  final OpenContainerBuilder closedBuilder;
-  final ContainerTransitionType transitionType;
-  final ClosedCallback<bool> onClosed;
-
-  @override
-  Widget build(BuildContext context) {
-    return OpenContainer<bool>(
-      transitionType: transitionType,
-      openBuilder: (BuildContext context, VoidCallback _) {
-        return const NewTaskScreen();
+        );
       },
-      onClosed: onClosed,
-      tappable: false,
-      closedElevation: 0,
-      closedShape:
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-      closedColor: Colors.white,
-      closedBuilder: closedBuilder,
     );
   }
 }

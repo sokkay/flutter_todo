@@ -2,6 +2,7 @@ import 'package:TodoApp/screens/edit_taks/edit_task_screen.dart';
 import 'package:TodoApp/screens/login/login_screen.dart';
 import 'package:TodoApp/screens/register/register_screen.dart';
 import 'package:TodoApp/screens/splash/splash_screen.dart';
+import 'package:TodoApp/screens/task/task_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:TodoApp/routes/routes_names.dart';
 
@@ -28,6 +29,11 @@ Route<dynamic> appRoutes(RouteSettings settings) {
       return MaterialPageRoute(
         builder: (context) => RegisterScreen(),
         settings: RouteSettings(name: RouteNames.registerScreen),
+      );
+    case RouteNames.taskScreen:
+      return MaterialPageRoute(
+        builder: (context) => TaskScreen(),
+        settings: RouteSettings(name: RouteNames.taskScreen),
       );
     case RouteNames.splashScreen:
     default:
